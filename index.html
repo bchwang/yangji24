@@ -2,7 +2,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <!-- 스마트폰 화면 확대/축소 방지 및 최적화 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <link rel="icon" type="image/png" href="logo.png">
@@ -31,25 +30,24 @@
             --color-complete: #2ecc71;    
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; }
-        /* 모바일 화면을 꽉 차게 쓰기 위해 여백 살짝 줄임 */
-        body { background-color: var(--bg-color); padding: 10px; color: #333; }
+        body { background-color: var(--bg-color); padding: 10px; color: #333; font-size: 16px; }
         
         header { 
             display: flex; align-items: center; justify-content: center; gap: 10px; 
             background: var(--panel-bg); padding: 15px 10px; border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; max-width: 1400px; margin-left: auto; margin-right: auto;
         }
-        .logo-img { height: 35px; object-fit: contain; }
-        /* 제목 글씨를 모바일에 맞게 조정 */
-        header h1 { font-size: 1.25rem; color: #2c3e50; margin: 0; letter-spacing: -0.5px; text-align: center; }
+        .logo-img { height: 40px; object-fit: contain; }
+        /* 최상단 제목 크기 확대 */
+        header h1 { font-size: 1.4rem; color: #2c3e50; margin: 0; letter-spacing: -0.5px; text-align: center; }
 
         .legend { 
-            display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; 
-            background: white; padding: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            font-size: 0.95rem; font-weight: bold; flex-wrap: wrap; max-width: 1400px; margin-left: auto; margin-right: auto;
+            display: flex; justify-content: center; gap: 12px; margin-bottom: 15px; 
+            background: white; padding: 15px 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-size: 1.1rem; font-weight: bold; flex-wrap: wrap; max-width: 1400px; margin-left: auto; margin-right: auto;
         }
-        .legend-item { display: flex; align-items: center; gap: 5px; color: #555; }
-        .box { width: 18px; height: 18px; border-radius: 4px; display: inline-block; }
+        .legend-item { display: flex; align-items: center; gap: 6px; color: #555; }
+        .box { width: 22px; height: 22px; border-radius: 4px; display: inline-block; }
 
         .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 1400px; margin: 0 auto; }
         @media (max-width: 900px) { 
@@ -59,23 +57,27 @@
         .wing-section { background: var(--panel-bg); border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-top: 6px solid #ccc; }
         .wing-section.orange { border-top-color: var(--orange-theme); }
         .wing-section.green { border-top-color: var(--green-theme); }
-        .wing-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #eee; }
         
-        .gate-group { margin-bottom: 15px; background: #fafafa; padding: 12px; border-radius: 6px; }
-        .gate-title { font-size: 1rem; color: #555; font-weight: bold; margin-bottom: 10px; }
+        /* 오렌지동, 그린동 글씨 대폭 확대 */
+        .wing-title { font-size: 1.6rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #eee; }
+        
+        .gate-group { margin-bottom: 15px; background: #fafafa; padding: 12px; border-radius: 8px; }
+        /* 1현관, 2현관 등 글씨 확대 */
+        .gate-title { font-size: 1.2rem; color: #555; font-weight: bold; margin-bottom: 10px; }
 
-        /* 객실 버튼을 누르기 편하게 큼직하게 키움 */
         .room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 10px; }
+        /* 방 번호 글씨 및 버튼 큼직하게 확대 */
         .room-btn { 
-            aspect-ratio: 1 / 1; border: none; border-radius: 8px; font-size: 1.15rem; font-weight: bold;
+            aspect-ratio: 1 / 1; border: none; border-radius: 8px; font-size: 1.4rem; font-weight: bold;
             color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: center;
             align-items: center; transition: all 0.15s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative;
         }
-        .room-btn span { font-size: 0.8rem; margin-top: 6px; font-weight: bold; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 12px; }
+        /* 상태 글씨 (정상, 진행 등) 확대 */
+        .room-btn span { font-size: 1rem; margin-top: 6px; font-weight: bold; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 12px; }
         
         .memo-badge {
             position: absolute; top: -6px; right: -6px; background: #ff4757; color: white;
-            font-size: 0.8rem; width: 22px; height: 22px; border-radius: 50%; display: flex;
+            font-size: 0.9rem; width: 26px; height: 26px; border-radius: 50%; display: flex;
             justify-content: center; align-items: center; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
@@ -85,54 +87,56 @@
         .status-진행 { background-color: var(--color-progress) !important; }
         .status-조치완료 { background-color: var(--color-complete) !important; }
 
-        /* 모달창(입력창) 최적화 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-height: 90vh; display: flex; flex-direction: column; }
-        .modal-header { font-size: 1.5rem; font-weight: bold; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-content { background: white; padding: 25px 20px; border-radius: 12px; width: 95%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-height: 90vh; display: flex; flex-direction: column; }
+        /* 방 번호 타이틀 확대 */
+        .modal-header { font-size: 1.8rem; font-weight: bold; margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         
-        .input-zone { background: #eef2f5; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .input-title { font-size: 1rem; font-weight: bold; color: #2b579a; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .input-zone { background: #eef2f5; padding: 20px 15px; border-radius: 8px; margin-bottom: 20px; }
+        .input-title { font-size: 1.2rem; font-weight: bold; color: #2b579a; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* 상태 선택 버튼 큼직하게 */
-        .status-selector { display: flex; gap: 6px; margin-bottom: 12px; }
+        .status-selector { display: flex; gap: 8px; margin-bottom: 15px; }
         .status-radio { display: none; }
-        .status-label { flex: 1; text-align: center; padding: 12px 2px; background: #fff; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: bold; color: #777; transition: 0.2s; letter-spacing: -0.5px;}
+        /* 선택 버튼(정상, 진행 등) 큼직하게 */
+        .status-label { flex: 1; text-align: center; padding: 16px 2px; background: #fff; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: bold; color: #777; transition: 0.2s; letter-spacing: -0.5px;}
         
         #radio-정상:checked + label { background: var(--color-normal); color: #333; border-color: var(--color-normal); }
         #radio-접수:checked + label { background: var(--color-received); color: white; border-color: var(--color-received); }
         #radio-진행:checked + label { background: var(--color-progress); color: white; border-color: var(--color-progress); }
         #radio-조치완료:checked + label { background: var(--color-complete); color: white; border-color: var(--color-complete); }
 
-        /* 입력창 글씨 16px(1rem) 고정으로 아이폰 화면 자동확대 방지 */
-        textarea { width: 100%; height: 80px; padding: 12px; border: 1px solid #ddd; border-radius: 8px; resize: none; font-size: 1rem; margin-bottom: 12px; font-family: inherit; }
+        /* 텍스트 입력창 글씨 확대 */
+        textarea { width: 100%; height: 100px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; resize: none; font-size: 1.2rem; margin-bottom: 15px; font-family: inherit; }
         
-        /* 등록 버튼 큼직하게 */
-        .btn-register { width: 100%; padding: 14px; background: #2b579a; color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        /* 등록하기 버튼 아주 크게 */
+        .btn-register { width: 100%; padding: 18px; background: #2b579a; color: white; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-register:hover { background: #1e3d6b; }
 
         .history-zone { flex: 1; overflow-y: auto; padding-right: 5px; }
-        .history-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: #555; display: flex; justify-content: space-between; align-items: center; }
+        .history-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: #555; display: flex; justify-content: space-between; align-items: center; }
         .history-list { list-style: none; border-left: 3px solid #ddd; padding-left: 15px; margin-left: 5px; }
-        .history-item { position: relative; margin-bottom: 15px; font-size: 0.95rem; line-height: 1.5; background: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px solid #eee; }
-        .history-item::before { content: ''; position: absolute; left: -24px; top: 12px; width: 12px; height: 12px; background: #aaa; border-radius: 50%; border: 3px solid white; }
+        /* 이력 내용 글씨 확대 */
+        .history-item { position: relative; margin-bottom: 15px; font-size: 1.1rem; line-height: 1.5; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+        .history-item::before { content: ''; position: absolute; left: -24px; top: 15px; width: 14px; height: 14px; background: #aaa; border-radius: 50%; border: 3px solid white; }
         .history-item.h-접수::before { background: var(--color-received); }
         .history-item.h-진행::before { background: var(--color-progress); }
         .history-item.h-조치완료::before { background: var(--color-complete); }
         .history-item.h-정상::before { background: var(--color-normal); }
         
-        .history-header { display: flex; justify-content: space-between; margin-bottom: 6px; }
-        .history-date { color: #888; font-size: 0.85rem; font-weight: bold; }
-        .history-status { font-weight: bold; margin-right: 5px; font-size: 1rem; }
+        .history-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        /* 날짜 및 상태 글씨 확대 */
+        .history-date { color: #888; font-size: 0.95rem; font-weight: bold; }
+        .history-status { font-weight: bold; margin-right: 5px; font-size: 1.1rem; }
         
         .admin-controls { display: flex; gap: 5px; }
-        .btn-small { background: #eee; border: 1px solid #ccc; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; color: #555; font-weight: bold; }
+        .btn-small { background: #eee; border: 1px solid #ccc; padding: 6px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: #555; font-weight: bold; }
         
-        .btn-reset { background: #fff1f0; color: #e74c3c; font-size: 0.9rem; padding: 6px 12px; border-radius: 6px; border: 1px solid #f5c6cb; cursor: pointer; font-weight: bold; display: flex; align-items: center; }
+        .btn-reset { background: #fff1f0; color: #e74c3c; font-size: 1rem; padding: 8px 14px; border-radius: 6px; border: 1px solid #f5c6cb; cursor: pointer; font-weight: bold; display: flex; align-items: center; }
         
-        .modal-btns { margin-top: 15px; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
-        .btn-close { padding: 14px; background: #6c757d; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem; width: 100%; }
+        .modal-btns { margin-top: 20px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
+        .btn-close { padding: 18px; background: #6c757d; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.3rem; width: 100%; }
 
-        #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; font-size: 1.3rem; font-weight: bold; color: #2b579a; }
+        #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #2b579a; }
     </style>
 </head>
 <body>
@@ -153,12 +157,12 @@
 
 <div class="dashboard">
     <div class="wing-section orange">
-        <!-- ⭐️ 오렌지동 글자색 적용 -->
+        <!-- 오렌지동 글자색 유지 -->
         <div class="wing-title" style="color: #f39c12;">오렌지동</div>
         <div id="orangeGates"></div>
     </div>
     <div class="wing-section green">
-        <!-- ⭐️ 그린동 글자색 적용 -->
+        <!-- 그린동 글자색 유지 -->
         <div class="wing-title" style="color: #27ae60;">그린동</div>
         <div id="greenGates"></div>
     </div>
@@ -184,7 +188,7 @@
                 <label for="radio-조치완료" class="status-label">조치완료</label>
             </div>
             <textarea id="modalDetail" placeholder="점검 내용, 하자 보고, 또는 작업 지시 사항을 입력하세요..."></textarea>
-            <!-- ⭐️ 버튼 이름 변경 적용 -->
+            <!-- 버튼 이름 등록하기 유지 -->
             <button class="btn-register" onclick="registerNewLog()">등록하기</button>
         </div>
 
@@ -320,7 +324,7 @@
         const data = roomDataStore[currentSelectedRoom];
         
         if (!data.history || !Array.isArray(data.history) || data.history.length === 0) {
-            historyList.innerHTML = "<li style='color:#999; list-style:none; font-size:0.95rem; text-align:center; padding: 20px 10px; background:#f9f9f9; border-radius:8px;'>등록된 내역이 없습니다.</li>";
+            historyList.innerHTML = "<li style='color:#999; list-style:none; font-size:1.1rem; text-align:center; padding: 25px 10px; background:#f9f9f9; border-radius:8px;'>등록된 내역이 없습니다.</li>";
         } else {
             [...data.history].reverse().forEach(log => {
                 const li = document.createElement('li');
@@ -333,7 +337,7 @@
                             <button class="btn-small" onclick="deleteLog(${log.id})">삭제</button>
                         </div>
                     </div>
-                    <div style="margin-top: 4px;"><span class="history-status">[${log.status}]</span> <span id="text-${log.id}">${log.text}</span></div>
+                    <div style="margin-top: 6px;"><span class="history-status">[${log.status}]</span> <span id="text-${log.id}">${log.text}</span></div>
                 `;
                 historyList.appendChild(li);
             });
