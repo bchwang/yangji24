@@ -10,11 +10,11 @@
     <link rel="apple-touch-icon" href="logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="객실관리">
+    <meta name="apple-mobile-web-app-title" content="유스텔관리">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="객실관리">
+    <meta name="application-name" content="유스텔관리">
 
-    <title>파인리조트 객실 이력 관리 시스템</title>
+    <title>파인리조트 유스텔 객실 이력 관리 시스템</title>
     
     <!-- 구글 Firebase 통신 라이브러리 -->
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -139,7 +139,7 @@
 
 <header>
     <img src="logo.png" alt="파인리조트" class="logo-img">
-    <h1>객실 현황 및 이력 관리 시스템</h1>
+    <h1>유스텔 현황 및 이력 관리 시스템</h1>
 </header>
 
 <div class="legend">
@@ -195,7 +195,7 @@
 </div>
 
 <script>
-    // ⭐️ 박사님의 고유 Firebase 설정값이 완벽하게 적용되었습니다.
+    // ⭐️ 유스텔 전용 파이어베이스 설정값
     const firebaseConfig = {
         apiKey: "AIzaSyBQTbPkV5ry_HFArbT4yiMIzIdibpnLYU4",
         authDomain: "yustel-manager.firebaseapp.com",
@@ -207,16 +207,17 @@
         measurementId: "G-BNVC38NRHJ"
     };
 
-    // Firebase 초기화 연동
+    // Firebase 초기화
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     
-    // 데이터베이스 저장될 큰 폴더 이름
+    // 데이터베이스 폴더 이름
     const roomsRef = db.ref('yustel_rooms_data');
 
-    // ★ 관리자 비밀번호 (필요시 이 부분을 변경하시면 됩니다)
+    // ★ 관리자 비밀번호
     const ADMIN_PASSWORD = "1234";
 
+    // ⭐️ 유스텔 전용 오렌지동, 그린동 데이터
     const yustelStructure = {
         "오렌지동": [
             { gate: "1현관", rooms: ["101", "102", "201", "202", "301", "302"] },
@@ -237,7 +238,7 @@
     let roomDataStore = {};
     let currentSelectedRoom = "";
 
-    // ⭐️ 누군가 휴대폰이나 PC에서 변경하면 0.1초만에 전 직원 화면을 갱신합니다.
+    // 실시간 동기화
     roomsRef.on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
@@ -248,7 +249,6 @@
         
         buildDashboard();
         
-        // 만약 창을 열어둔 상태라면 타임라인 내용도 실시간 업데이트
         if (document.getElementById('detailModal').style.display === 'flex') {
             renderHistoryList();
             if(roomDataStore[currentSelectedRoom]) {
@@ -353,7 +353,6 @@
         }
     }
 
-    // ⭐️ 구글 파이어베이스 서버로 전송하는 기능
     function saveToServer() {
         roomsRef.set(roomDataStore);
     }
