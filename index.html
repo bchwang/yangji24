@@ -15,6 +15,9 @@
 
     <title>파인리조트 유스텔 객실 이력 관리 시스템</title>
     
+    <!-- ⭐️ 스마트폰에서도 무조건 굵게 나오는 웹 폰트(Noto Sans KR) 강제 적용 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
@@ -29,8 +32,9 @@
             --color-progress: #3498db;    
             --color-complete: #2ecc71;    
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; }
-        body { background-color: var(--bg-color); padding: 10px; color: #333; font-size: 16px; }
+        /* ⭐️ 스마트폰용 글꼴 적용 */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; }
+        body { background-color: var(--bg-color); padding: 10px; color: #111; font-size: 16px; }
         
         header { 
             display: flex; align-items: center; justify-content: center; gap: 10px; 
@@ -38,15 +42,14 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; max-width: 1400px; margin-left: auto; margin-right: auto;
         }
         .logo-img { height: 40px; object-fit: contain; }
-        /* 최상단 제목 크기 확대 */
-        header h1 { font-size: 1.4rem; color: #2c3e50; margin: 0; letter-spacing: -0.5px; text-align: center; }
+        header h1 { font-size: 1.4rem; color: #111; margin: 0; letter-spacing: -0.5px; text-align: center; font-weight: 900; }
 
         .legend { 
             display: flex; justify-content: center; gap: 12px; margin-bottom: 15px; 
             background: white; padding: 15px 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            font-size: 1.1rem; font-weight: bold; flex-wrap: wrap; max-width: 1400px; margin-left: auto; margin-right: auto;
+            font-size: 1.1rem; font-weight: 800; flex-wrap: wrap; max-width: 1400px; margin-left: auto; margin-right: auto;
         }
-        .legend-item { display: flex; align-items: center; gap: 6px; color: #555; }
+        .legend-item { display: flex; align-items: center; gap: 6px; color: #333; }
         .box { width: 22px; height: 22px; border-radius: 4px; display: inline-block; }
 
         .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 1400px; margin: 0 auto; }
@@ -58,22 +61,22 @@
         .wing-section.orange { border-top-color: var(--orange-theme); }
         .wing-section.green { border-top-color: var(--green-theme); }
         
-        /* 오렌지동, 그린동 글씨 대폭 확대 */
-        .wing-title { font-size: 1.6rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #eee; }
+        /* ⭐️ 동 이름 아주 굵게 (글꼴 굵기 900) */
+        .wing-title { font-size: 1.7rem; font-weight: 900; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #eee; letter-spacing: -1px; }
         
         .gate-group { margin-bottom: 15px; background: #fafafa; padding: 12px; border-radius: 8px; }
-        /* 1현관, 2현관 등 글씨 확대 */
-        .gate-title { font-size: 1.2rem; color: #555; font-weight: bold; margin-bottom: 10px; }
+        .gate-title { font-size: 1.2rem; color: #333; font-weight: 900; margin-bottom: 10px; }
 
         .room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 10px; }
-        /* 방 번호 글씨 및 버튼 큼직하게 확대 */
+        /* ⭐️ 객실 번호 아주 굵게 (글꼴 굵기 900) */
         .room-btn { 
-            aspect-ratio: 1 / 1; border: none; border-radius: 8px; font-size: 1.4rem; font-weight: bold;
+            aspect-ratio: 1 / 1; border: none; border-radius: 8px; font-size: 1.4rem; font-weight: 900;
             color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: center;
             align-items: center; transition: all 0.15s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative;
+            letter-spacing: -0.5px;
         }
-        /* 상태 글씨 (정상, 진행 등) 확대 */
-        .room-btn span { font-size: 1rem; margin-top: 6px; font-weight: bold; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 12px; }
+        /* 상태 글씨 굵게 */
+        .room-btn span { font-size: 1rem; margin-top: 6px; font-weight: 800; background: rgba(0,0,0,0.2); padding: 4px 10px; border-radius: 12px; }
         
         .memo-badge {
             position: absolute; top: -6px; right: -6px; background: #ff4757; color: white;
@@ -81,7 +84,7 @@
             justify-content: center; align-items: center; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
 
-        .status-정상 { background-color: var(--color-normal) !important; color: #333 !important; }
+        .status-정상 { background-color: var(--color-normal) !important; color: #111 !important; }
         .status-정상 span { background: rgba(0,0,0,0.05); }
         .status-접수 { background-color: var(--color-received) !important; }
         .status-진행 { background-color: var(--color-progress) !important; }
@@ -89,34 +92,29 @@
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; padding: 25px 20px; border-radius: 12px; width: 95%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-height: 90vh; display: flex; flex-direction: column; }
-        /* 방 번호 타이틀 확대 */
-        .modal-header { font-size: 1.8rem; font-weight: bold; margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header { font-size: 1.8rem; font-weight: 900; margin-bottom: 20px; color: #111; border-bottom: 2px solid #eee; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         
         .input-zone { background: #eef2f5; padding: 20px 15px; border-radius: 8px; margin-bottom: 20px; }
-        .input-title { font-size: 1.2rem; font-weight: bold; color: #2b579a; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .input-title { font-size: 1.2rem; font-weight: 900; color: #1e3d6b; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         
         .status-selector { display: flex; gap: 8px; margin-bottom: 15px; }
         .status-radio { display: none; }
-        /* 선택 버튼(정상, 진행 등) 큼직하게 */
-        .status-label { flex: 1; text-align: center; padding: 16px 2px; background: #fff; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: bold; color: #777; transition: 0.2s; letter-spacing: -0.5px;}
+        .status-label { flex: 1; text-align: center; padding: 16px 2px; background: #fff; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1.15rem; font-weight: 800; color: #555; transition: 0.2s; letter-spacing: -0.5px;}
         
-        #radio-정상:checked + label { background: var(--color-normal); color: #333; border-color: var(--color-normal); }
+        #radio-정상:checked + label { background: var(--color-normal); color: #111; border-color: var(--color-normal); }
         #radio-접수:checked + label { background: var(--color-received); color: white; border-color: var(--color-received); }
         #radio-진행:checked + label { background: var(--color-progress); color: white; border-color: var(--color-progress); }
         #radio-조치완료:checked + label { background: var(--color-complete); color: white; border-color: var(--color-complete); }
 
-        /* 텍스트 입력창 글씨 확대 */
-        textarea { width: 100%; height: 100px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; resize: none; font-size: 1.2rem; margin-bottom: 15px; font-family: inherit; }
+        textarea { width: 100%; height: 100px; padding: 15px; border: 1px solid #ddd; border-radius: 8px; resize: none; font-size: 1.2rem; margin-bottom: 15px; font-family: inherit; font-weight: 700; color: #111;}
         
-        /* 등록하기 버튼 아주 크게 */
-        .btn-register { width: 100%; padding: 18px; background: #2b579a; color: white; border: none; border-radius: 8px; font-size: 1.3rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-register { width: 100%; padding: 18px; background: #2b579a; color: white; border: none; border-radius: 8px; font-size: 1.4rem; font-weight: 900; cursor: pointer; transition: 0.2s; }
         .btn-register:hover { background: #1e3d6b; }
 
         .history-zone { flex: 1; overflow-y: auto; padding-right: 5px; }
-        .history-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; color: #555; display: flex; justify-content: space-between; align-items: center; }
+        .history-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 15px; color: #333; display: flex; justify-content: space-between; align-items: center; }
         .history-list { list-style: none; border-left: 3px solid #ddd; padding-left: 15px; margin-left: 5px; }
-        /* 이력 내용 글씨 확대 */
-        .history-item { position: relative; margin-bottom: 15px; font-size: 1.1rem; line-height: 1.5; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+        .history-item { position: relative; margin-bottom: 15px; font-size: 1.1rem; line-height: 1.5; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee; font-weight: 700; color: #111;}
         .history-item::before { content: ''; position: absolute; left: -24px; top: 15px; width: 14px; height: 14px; background: #aaa; border-radius: 50%; border: 3px solid white; }
         .history-item.h-접수::before { background: var(--color-received); }
         .history-item.h-진행::before { background: var(--color-progress); }
@@ -124,19 +122,18 @@
         .history-item.h-정상::before { background: var(--color-normal); }
         
         .history-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
-        /* 날짜 및 상태 글씨 확대 */
-        .history-date { color: #888; font-size: 0.95rem; font-weight: bold; }
-        .history-status { font-weight: bold; margin-right: 5px; font-size: 1.1rem; }
+        .history-date { color: #555; font-size: 0.95rem; font-weight: 800; }
+        .history-status { font-weight: 900; margin-right: 5px; font-size: 1.2rem; }
         
         .admin-controls { display: flex; gap: 5px; }
-        .btn-small { background: #eee; border: 1px solid #ccc; padding: 6px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: #555; font-weight: bold; }
+        .btn-small { background: #eee; border: 1px solid #ccc; padding: 6px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: #333; font-weight: 800; }
         
-        .btn-reset { background: #fff1f0; color: #e74c3c; font-size: 1rem; padding: 8px 14px; border-radius: 6px; border: 1px solid #f5c6cb; cursor: pointer; font-weight: bold; display: flex; align-items: center; }
+        .btn-reset { background: #fff1f0; color: #e74c3c; font-size: 1rem; padding: 8px 14px; border-radius: 6px; border: 1px solid #f5c6cb; cursor: pointer; font-weight: 900; display: flex; align-items: center; }
         
         .modal-btns { margin-top: 20px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
-        .btn-close { padding: 18px; background: #6c757d; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.3rem; width: 100%; }
+        .btn-close { padding: 18px; background: #6c757d; color: white; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 1.4rem; width: 100%; }
 
-        #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: bold; color: #2b579a; }
+        #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; font-weight: 900; color: #2b579a; }
     </style>
 </head>
 <body>
@@ -157,12 +154,12 @@
 
 <div class="dashboard">
     <div class="wing-section orange">
-        <!-- 오렌지동 글자색 유지 -->
+        <!-- 오렌지동 글자색 -->
         <div class="wing-title" style="color: #f39c12;">오렌지동</div>
         <div id="orangeGates"></div>
     </div>
     <div class="wing-section green">
-        <!-- 그린동 글자색 유지 -->
+        <!-- 그린동 글자색 -->
         <div class="wing-title" style="color: #27ae60;">그린동</div>
         <div id="greenGates"></div>
     </div>
@@ -188,7 +185,7 @@
                 <label for="radio-조치완료" class="status-label">조치완료</label>
             </div>
             <textarea id="modalDetail" placeholder="점검 내용, 하자 보고, 또는 작업 지시 사항을 입력하세요..."></textarea>
-            <!-- 버튼 이름 등록하기 유지 -->
+            <!-- 버튼 이름 등록하기 -->
             <button class="btn-register" onclick="registerNewLog()">등록하기</button>
         </div>
 
@@ -324,7 +321,7 @@
         const data = roomDataStore[currentSelectedRoom];
         
         if (!data.history || !Array.isArray(data.history) || data.history.length === 0) {
-            historyList.innerHTML = "<li style='color:#999; list-style:none; font-size:1.1rem; text-align:center; padding: 25px 10px; background:#f9f9f9; border-radius:8px;'>등록된 내역이 없습니다.</li>";
+            historyList.innerHTML = "<li style='color:#777; list-style:none; font-size:1.1rem; text-align:center; padding: 25px 10px; background:#f9f9f9; border-radius:8px; font-weight:800;'>등록된 내역이 없습니다.</li>";
         } else {
             [...data.history].reverse().forEach(log => {
                 const li = document.createElement('li');
