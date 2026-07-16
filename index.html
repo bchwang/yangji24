@@ -3,426 +3,500 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>오렌지동, 그린동 호실 관리</title>
     
-    <!-- 아이콘 및 앱 설정 -->
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="shortcut icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="logo.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏢</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏢</text></svg>">
     <meta name="apple-mobile-web-app-title" content="객실관리">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="객실관리">
 
-    <title>파인리조트 객실 이력 관리 시스템</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     
-    <!-- 구글 Firebase 통신 라이브러리 -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
-
     <style>
-        :root {
-            --bg-color: #f4f6f9;
-            --panel-bg: #ffffff;
-            --orange-theme: #f39c12;
-            --green-theme: #27ae60;
-            --color-normal: #e0e0e0;      
-            --color-received: #e74c3c;    
-            --color-progress: #3498db;    
-            --color-complete: #2ecc71;    
+        :root { 
+            --stec-navy: #0f172a; --stec-blue: #1e40af; --accent-green: #22c55e; 
+            --accent-red: #ef4444; --accent-gold: #f59e0b; --accent-cyan: #0284c7; 
+            --bg-light: #f8fafc; --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Malgun Gothic', sans-serif; }
-        body { background-color: var(--bg-color); padding: 15px; color: #333; }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f1f5f9; margin: 0; padding: 0; color: #1e293b; line-height: 1.6; }
+        .container { max-width: 1440px; margin: 0 auto; padding: 30px; }
         
-        header { 
-            display: flex; align-items: center; justify-content: center; gap: 15px; 
-            background: var(--panel-bg); padding: 15px 20px; border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; max-width: 1400px; margin-left: auto; margin-right: auto;
-        }
-        .logo-img { height: 38px; object-fit: contain; }
-        header h1 { font-size: 1.4rem; color: #2c3e50; margin: 0; letter-spacing: -0.5px; }
-
-        .legend { 
-            display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; 
-            background: white; padding: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            font-size: 0.85rem; font-weight: bold; flex-wrap: wrap; max-width: 1400px; margin-left: auto; margin-right: auto;
-        }
-        .legend-item { display: flex; align-items: center; gap: 6px; color: #555; }
-        .box { width: 16px; height: 16px; border-radius: 4px; display: inline-block; }
-
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 1400px; margin: 0 auto; }
-        @media (max-width: 900px) { 
-            .dashboard { grid-template-columns: 1fr; } 
-            header { flex-direction: column; gap: 10px; padding: 15px; }
-            .logo-img { height: 45px; }
-        }
-
-        .wing-section { background: var(--panel-bg); border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-top: 6px solid #ccc; }
-        .wing-section.orange { border-top-color: var(--orange-theme); }
-        .wing-section.green { border-top-color: var(--green-theme); }
-        .wing-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 2px solid #eee; }
+        .header-bar { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); color: white; padding: 25px 40px; border-radius: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); }
+        .header-title-area { display: flex; align-items: center; gap: 30px; }
+        .logo-box { background: white; padding: 10px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .logo-box img { max-height: 48px; object-fit: contain; } 
+        .header-text h1 { margin: 0; font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 15px; }
+        .sync-badge { font-size: 12px; padding: 6px 16px; border-radius: 30px; background: rgba(34, 197, 94, 0.2); color: #4ade80; font-weight: 600; }
+        .header-btn-group { display: flex; gap: 12px; align-items: center; }
         
-        .gate-group { margin-bottom: 15px; background: #fafafa; padding: 10px; border-radius: 6px; }
-        .gate-title { font-size: 0.85rem; color: #666; font-weight: bold; margin-bottom: 8px; }
+        button { cursor: pointer; border: none; border-radius: 10px; font-weight: 600; transition: all 0.3s; font-family: inherit; font-size: 14px; padding: 12px 20px; }
+        .btn-blue { background: #3b82f6; color: white; }
+        .btn-green { background: #10b981; color: white; }
+        .btn-settings { background: rgba(255,255,255,0.1); color: white; padding: 12px; border-radius: 50%; font-size: 18px; }
+        
+        .dashboard { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 18px; border: 1px solid #e2e8f0; box-shadow: var(--card-shadow); display: flex; flex-direction: column; }
+        .stat-val { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 5px; }
+        .stat-lbl { font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; }
+        .stat-list { margin-top: 10px; font-size: 12px; color: #475569; max-height: 50px; overflow-y: auto; background: #f8fafc; padding: 8px; border-radius: 8px; font-weight: 600; }
 
-        .room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; }
-        .room-btn { 
-            aspect-ratio: 1 / 1; border: none; border-radius: 6px; font-size: 0.95rem; font-weight: bold;
-            color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: center;
-            align-items: center; transition: all 0.15s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative;
-        }
-        .room-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-        .room-btn span { font-size: 0.7rem; margin-top: 4px; font-weight: normal; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px; }
+        .search-area { background: white; padding: 20px; border-radius: 18px; margin-bottom: 30px; border: 1px solid #e2e8f0; box-shadow: var(--card-shadow); }
+        .search-input { width: 100%; padding: 15px 20px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px; box-sizing: border-box; background-color: #f8fafc; outline: none; }
+        .search-input:focus { border-color: #3b82f6; background-color: #fff; }
         
-        .memo-badge {
-            position: absolute; top: -5px; right: -5px; background: #ff4757; color: white;
-            font-size: 0.6rem; width: 18px; height: 18px; border-radius: 50%; display: flex;
-            justify-content: center; align-items: center; border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
+        .floor-section { background: white; border-radius: 20px; padding: 25px; margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .floor-title { font-weight: 700; color: #0f172a; margin-bottom: 20px; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; }
+        .grid-rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; }
+        
+        .room-btn { background: white; border: 1px solid #e2e8f0; padding: 15px 5px; border-radius: 10px; font-size: 13px; font-weight: 700; color: #475569; transition: 0.2s; }
+        .room-btn.status-접수 { background: #fff1f2; border-color: #fecdd3; color: #be123c; }
+        .room-btn.status-점검 { background: #fffbeb; border-color: #fef3c7; color: #b45309; }
+        .room-btn.status-완료 { background: #f0fdf4; border-color: #dcfce7; color: #15803d; }
+        .room-btn.fire-hazard { border: 2px dashed #ea580c !important; }
+        .room-btn.leak-hazard { border: 2px dashed var(--accent-cyan) !important; background: #f0f9ff !important; color: #0369a1 !important; }
 
-        .status-정상 { background-color: var(--color-normal) !important; color: #333 !important; }
-        .status-정상 span { background: rgba(0,0,0,0.05); }
-        .status-접수 { background-color: var(--color-received) !important; }
-        .status-진행 { background-color: var(--color-progress) !important; }
-        .status-조치완료 { background-color: var(--color-complete) !important; }
+        /* ------------------ UI 개편: 새로운 모달 스타일 ------------------ */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: white; width: 100%; max-width: 500px; border-radius: 20px; padding: 25px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0; }
+        .modal-header h3 { margin: 0; font-size: 20px; color: #1e293b; }
+        .header-actions { display: flex; gap: 8px; }
+        
+        .section-title { font-size: 14px; font-weight: 700; color: #3b82f6; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        
+        .status-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+        .radio-input { display: none; }
+        .status-btn { display: block; padding: 12px 5px; border: 1px solid #cbd5e1; border-radius: 8px; text-align: center; cursor: pointer; font-size: 13px; font-weight: 700; color: #64748b; background: white; transition: 0.2s; }
+        .radio-input:checked + .status-btn { background: #1e3a8a; color: white; border-color: #1e3a8a; box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2); }
+        
+        .full-btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-submit { background: #2563eb; color: white; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+        .btn-submit:hover { background: #1d4ed8; }
+        .btn-close { background: #64748b; color: white; margin-top: 15px; }
+        .btn-close:hover { background: #475569; }
+        
+        .btn-action-small { background: #f1f5f9; color: #475569; padding: 6px 10px; border-radius: 6px; font-size: 12px; font-weight: bold; border: none; cursor: pointer; display: none; }
+        .btn-action-small.danger { color: #ef4444; background: #fee2e2; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 95%; max-width: 500px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); max-height: 90vh; display: flex; flex-direction: column; }
-        .modal-header { font-size: 1.3rem; font-weight: bold; margin-bottom: 15px; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .hist-list-container { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; min-height: 80px; max-height: 250px; overflow-y: auto; }
+        .hist-item { background: white; border: 1px solid #e2e8f0; padding: 12px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid #1e3a8a; }
+        .hist-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .hist-time-status { font-size: 12px; color: #1e3a8a; font-weight: 700; }
+        .hist-txt { font-size: 13px; font-weight: 600; color: #334155; white-space: pre-wrap; margin-top: 4px; }
+        .hist-action-btn { background: none; border: none; font-weight: 700; cursor: pointer; padding: 0 5px; font-size: 12px; }
         
-        .input-zone { background: #eef2f5; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .input-title { font-size: 0.9rem; font-weight: bold; color: #2b579a; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .status-selector { display: flex; gap: 5px; margin-bottom: 10px; }
-        .status-radio { display: none; }
-        .status-label { flex: 1; text-align: center; padding: 8px 5px; background: #fff; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold; color: #777; transition: 0.2s; }
+        .hazard-box { display: flex; gap: 15px; margin-bottom: 15px; padding: 12px; background: #f1f5f9; border-radius: 10px; }
         
-        #radio-정상:checked + label { background: var(--color-normal); color: #333; border-color: var(--color-normal); }
-        #radio-접수:checked + label { background: var(--color-received); color: white; border-color: var(--color-received); }
-        #radio-진행:checked + label { background: var(--color-progress); color: white; border-color: var(--color-progress); }
-        #radio-조치완료:checked + label { background: var(--color-complete); color: white; border-color: var(--color-complete); }
-
-        textarea { width: 100%; height: 60px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; resize: none; font-size: 0.9rem; margin-bottom: 10px; }
-        .btn-register { width: 100%; padding: 10px; background: #2b579a; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-register:hover { background: #1e3d6b; }
-
-        .history-zone { flex: 1; overflow-y: auto; padding-right: 5px; }
-        .history-title { font-size: 1rem; font-weight: bold; margin-bottom: 10px; color: #555; display: flex; justify-content: space-between; align-items: center; }
-        .history-list { list-style: none; border-left: 2px solid #ccc; padding-left: 15px; margin-left: 5px; }
-        .history-item { position: relative; margin-bottom: 12px; font-size: 0.85rem; line-height: 1.4; background: #f9f9f9; padding: 10px; border-radius: 6px; border: 1px solid #eee; }
-        .history-item::before { content: ''; position: absolute; left: -22px; top: 12px; width: 10px; height: 10px; background: #aaa; border-radius: 50%; border: 2px solid white; }
-        .history-item.h-접수::before { background: var(--color-received); }
-        .history-item.h-진행::before { background: var(--color-progress); }
-        .history-item.h-조치완료::before { background: var(--color-complete); }
-        .history-item.h-정상::before { background: var(--color-normal); }
-        
-        .history-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
-        .history-date { color: #888; font-size: 0.75rem; font-weight: bold; }
-        .history-status { font-weight: bold; margin-right: 5px; }
-        
-        .admin-controls { display: flex; gap: 5px; }
-        .btn-small { background: #eee; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; color: #555; font-weight: bold; }
-        .btn-small:hover { background: #ddd; }
-        
-        .btn-reset { background: #fff1f0; color: #e74c3c; font-size: 0.8rem; padding: 5px 10px; border-radius: 4px; border: 1px solid #f5c6cb; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 4px; }
-        .btn-reset:hover { background: #f8d7da; }
-        
-        .modal-btns { margin-top: 15px; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
-        .btn-close { padding: 12px 30px; background: #6c757d; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1rem; width: 100%; }
-
-        /* 로딩 화면 */
-        #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; font-weight: bold; color: #2b579a; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div id="loadingScreen">📡 실시간 데이터를 불러오는 중입니다...</div>
-
-<header>
-    <img src="logo.png" alt="파인리조트" class="logo-img">
-    <h1>객실 현황 및 이력 관리 시스템</h1>
-</header>
-
-<div class="legend">
-    <div class="legend-item"><span class="box status-정상"></span> 정상 (대기)</div>
-    <div class="legend-item"><span class="box status-접수"></span> 접수 (확인요망)</div>
-    <div class="legend-item"><span class="box status-진행"></span> 진행 중 (작업중)</div>
-    <div class="legend-item"><span class="box status-조치완료"></span> 조치 완료</div>
+<div id="loader" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;">
+    <div class="spinner" style="width: 50px; height: 50px; border: 5px solid rgba(255,255,255,0.1); border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <p>데이터 연동 중...</p>
 </div>
 
-<div class="dashboard">
-    <div class="wing-section orange">
-        <div class="wing-title">오렌지동</div>
-        <div id="orangeGates"></div>
+<div class="container">
+    <div class="header-bar">
+        <div class="header-title-area">
+            <div class="logo-box">
+                <img src="image_e5ab80.png.png" alt="S-Tec" onerror="this.parentElement.innerHTML='S-TEC'">
+            </div>
+            <div class="header-text">
+                <!-- 타이틀 변경 완료 -->
+                <h1>오렌지동, 그린동 호실 관리 <span id="sync-status" class="sync-badge">연결중</span></h1>
+            </div>
+        </div>
+        <div class="header-btn-group">
+            <button class="btn-blue" onclick="openAddModal()">➕ 구역 추가</button>
+            <button class="btn-green" onclick="exportDataV2()">📋 엑셀 다운로드</button>
+            <button class="btn-settings" onclick="changeAdminPwd()">🔒</button>
+        </div>
     </div>
-    <div class="wing-section green">
-        <div class="wing-title">그린동</div>
-        <div id="greenGates"></div>
+
+    <div class="dashboard">
+        <div class="stat-card"> <span class="stat-val" id="stat-total">0</span> <span class="stat-lbl">전체 시설</span> </div>
+        <div class="stat-card received"> <span class="stat-val" id="stat-received">0</span> <span class="stat-lbl">🔴 상황 접수</span> <div id="list-received" class="stat-list">없음</div> </div>
+        <div class="stat-card inspecting"> <span class="stat-val" id="stat-inspecting">0</span> <span class="stat-lbl">🟡 진행/점검</span> <div id="list-inspecting" class="stat-list">없음</div> </div>
+        <div class="stat-card fire"> <span class="stat-val" id="stat-fire">0</span> <span class="stat-lbl">🔥 화재안전</span> <div id="list-fire" class="stat-list">없음</div> </div>
+        <div class="stat-card" style="border-left-color: var(--accent-cyan);"> <span class="stat-val" id="stat-leak">0</span> <span class="stat-lbl">💧 누수/배수</span> <div id="list-leak" class="stat-list">없음</div> </div>
     </div>
+
+    <div class="search-area">
+        <input type="text" id="search" class="search-input" placeholder="호수, 구역명 검색..." oninput="render()">
+    </div>
+
+    <div id="room-grid"></div>
 </div>
 
-<div class="modal-overlay" id="detailModal">
+<!-- 개편된 입력 모달창 -->
+<div class="modal-overlay" id="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <span id="modalTitle">오렌지동 101호</span>
-            <button class="btn-reset" onclick="resetRoomHistory()">🔒 전체 삭제</button>
-        </div>
-        
-        <div class="input-zone">
-            <div class="input-title"><span>📝 신규 이력 등록</span></div>
-            <div class="status-selector">
-                <input type="radio" name="roomStatus" id="radio-정상" class="status-radio" value="정상" checked>
-                <label for="radio-정상" class="status-label">정상</label>
-                <input type="radio" name="roomStatus" id="radio-접수" class="status-radio" value="접수">
-                <label for="radio-접수" class="status-label">접수</label>
-                <input type="radio" name="roomStatus" id="radio-진행" class="status-radio" value="진행">
-                <label for="radio-진행" class="status-label">진행</label>
-                <input type="radio" name="roomStatus" id="radio-조치완료" class="status-radio" value="조치완료">
-                <label for="radio-조치완료" class="status-label">조치완료</label>
+            <h3 id="modal-title">오렌지동 104호</h3>
+            <div class="header-actions">
+                <button id="rename-btn" class="btn-action-small" onclick="renameRoom()">✏️ 이름수정</button>
+                <button id="delete-room-btn" class="btn-action-small danger" onclick="deleteRoom()">🗑️ 구역삭제</button>
             </div>
-            <textarea id="modalDetail" placeholder="점검 내용, 하자 보고, 또는 작업 지시 사항을 입력하세요..."></textarea>
-            <button class="btn-register" onclick="registerNewLog()">등록 및 서버에 저장하기</button>
         </div>
+        <div class="modal-body">
+            <!-- 특이사항 (화재/누수) -->
+            <div class="hazard-box">
+                <label style="font-size:13px; font-weight:700; color:#ea580c; cursor:pointer;">
+                    <input type="checkbox" id="fire-check" onchange="toggleFireDesc()"> 🔥 화재 결함
+                </label>
+                <label style="font-size:13px; font-weight:700; color:#0284c7; cursor:pointer;">
+                    <input type="checkbox" id="leak-check" onchange="toggleLeakDesc()"> 💧 누수 결함
+                </label>
+            </div>
+            <div id="fire-desc-box" style="display:none; margin-bottom:10px;"><input type="text" id="fire-desc" class="search-input" style="padding:10px; font-size:13px;" placeholder="화재 결함 사유 입력"></div>
+            <div id="leak-desc-box" style="display:none; margin-bottom:15px;"><input type="text" id="leak-desc" class="search-input" style="padding:10px; font-size:13px;" placeholder="누수 결함 사유 입력"></div>
 
-        <div class="history-zone">
-            <div class="history-title">📋 객실 조치 이력 (실시간)</div>
-            <ul class="history-list" id="historyList"></ul>
+            <div class="section-title">📝 신규 이력 등록</div>
+            <div class="status-grid-4">
+                <input type="radio" name="st" value="정상" id="st1" class="radio-input"><label class="status-btn" for="st1">정상</label>
+                <input type="radio" name="st" value="접수" id="st2" class="radio-input"><label class="status-btn" for="st2">접수</label>
+                <input type="radio" name="st" value="점검" id="st3" class="radio-input"><label class="status-btn" for="st3">진행</label>
+                <input type="radio" name="st" value="완료" id="st4" class="radio-input"><label class="status-btn" for="st4">조치완료</label>
+            </div>
+            
+            <textarea id="repair-txt" rows="3" style="width:100%; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:12px; padding:15px; font-family:inherit; margin-bottom:15px; resize:none; font-size:14px;" placeholder="점검 내용, 하자 보고, 또는 작업 지시 사항을 입력하세요..."></textarea>
+            
+            <!-- 직관적이고 큼직한 등록 버튼 -->
+            <button class="full-btn btn-submit" onclick="save()">등록</button>
+
+            <div class="section-title">📋 객실 조치 이력 (실시간)</div>
+            <div id="hist-list" class="hist-list-container">
+                <!-- 이력이 여기에 들어갑니다 -->
+            </div>
+
+            <button class="full-btn btn-close" onclick="closeModal()">창 닫기</button>
         </div>
-        
-        <div class="modal-btns">
-            <button class="btn-close" onclick="closeModal()">창 닫기</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="add-modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header" style="margin-bottom: 15px; padding-bottom: 10px;">
+            <h3 style="margin-top:0;">➕ 구역 추가</h3>
+        </div>
+        <div class="modal-body">
+            <!-- 주변 환경 옵션 추가 완료 -->
+            <select id="new-area-type" class="search-input" style="margin-bottom: 15px; font-weight: bold; color: #1e3a8a;">
+                <option value="env">주변 환경 (야외, 주차장, 부대시설 등)</option>
+                <option value="floor1">1층 및 협력시설</option>
+                <option value="custom">기타 등록 구역</option>
+            </select>
+            <input type="text" id="new-area" class="search-input" placeholder="새 구역/업체 이름 입력 (예: A주차장)">
+            <button class="full-btn btn-submit" style="margin-top:20px; margin-bottom: 10px;" onclick="addArea()">추가하기</button>
+            <button class="full-btn btn-close" style="margin-top:0;" onclick="closeAddModal()">취소</button>
         </div>
     </div>
 </div>
 
 <script>
-    // ⭐️ 박사님의 고유 Firebase 설정값이 완벽하게 적용되었습니다.
-    const firebaseConfig = {
-        apiKey: "AIzaSyBQTbPkV5ry_HFArbT4yiMIzIdibpnLYU4",
-        authDomain: "yustel-manager.firebaseapp.com",
-        databaseURL: "https://yustel-manager-default-rtdb.firebaseio.com",
-        projectId: "yustel-manager",
-        storageBucket: "yustel-manager.firebasestorage.app",
-        messagingSenderId: "585662351877",
-        appId: "1:585662351877:web:2b26223e4f987144066a6c",
-        measurementId: "G-BNVC38NRHJ"
-    };
-
-    // Firebase 초기화 연동
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    const firebaseConfig = { apiKey: "AIzaSyAl7MKViptnrmWFIm5sqpAAuk_c6Pi5Ej8", authDomain: "condo-sy.firebaseapp.com", projectId: "condo-sy", storageBucket: "condo-sy.firebasestorage.app", messagingSenderId: "352557112590", appId: "1:352557112590:web:ed8ea06a7566f1e83e0b5f", measurementId: "G-63S4HW2SNW" };
     
-    // 데이터베이스 저장될 큰 폴더 이름
-    const roomsRef = db.ref('yustel_rooms_data');
-
-    // ★ 관리자 비밀번호 (필요시 이 부분을 변경하시면 됩니다)
-    const ADMIN_PASSWORD = "1234";
-
-    const yustelStructure = {
-        "오렌지동": [
-            { gate: "1현관", rooms: ["101", "102", "201", "202", "301", "302"] },
-            { gate: "2현관", rooms: ["103", "104", "203", "204", "303", "304"] },
-            { gate: "3현관", rooms: ["105", "106", "205", "206", "305", "306"] },
-            { gate: "4현관", rooms: ["107", "108", "207", "208", "307", "308"] },
-            { gate: "5현관", rooms: ["109", "110", "209", "210", "309", "310"] }
-        ],
-        "그린동": [
-            { gate: "1현관", rooms: ["111", "112", "211", "212"] },
-            { gate: "2현관", rooms: ["113", "114", "213", "214"] },
-            { gate: "3현관", rooms: ["115", "116", "215", "216"] },
-            { gate: "4현관", rooms: ["117", "118", "217", "218"] },
-            { gate: "5현관", rooms: ["119", "120", "219", "220"] }
-        ]
+    const initialFloors = { 
+        "10층 (10F)": ["1001M", "1002M", "1003X", "1004S", "1005S", "1006M", "1007M", "1008S", "1009S", "1010S", "1011S", "1012S", "1013S", "1014S", "1015S", "1016S", "1017L1", "1018L1", "1019S", "1020S", "1021S", "1022S", "1023S", "1024S", "1025S", "1026S", "904복층", "905복층", "906복층", "918복층", "919복층", "920복층", "921복층"], 
+        "9층 (9F)": ["901M", "902M", "903X", "904LD", "905MD", "906MD", "907M", "908M", "909S", "910S", "911S", "912S", "913S", "914S", "915S", "916S", "917S", "918MD", "919MD", "920MD", "921MD", "922S", "923S", "924S", "925S", "926S", "927S", "928S", "929S", "805복층", "806복층", "822복층", "823복층", "824복층", "825복층"], 
+        "8층 (8F)": ["801M", "802M", "803X", "804L", "805LD", "806LD", "807M", "808M", "809M", "810M", "811S", "812S", "813S", "814S", "815S", "816S", "817S", "818S", "819S", "820M", "821M", "822MD", "823MD", "824MD", "825MD", "826M", "827M", "828S", "829S", "830S", "831S", "832S", "833S", "834S", "835S"], 
+        "7층 (7F)": ["701M", "702M", "703X", "704L", "705L", "706L", "707M", "708M", "709M", "710M", "711S", "712S", "713S", "714S", "715S", "716S", "717S", "718S", "719S", "720M", "721M", "722M", "723M", "724M", "725M", "726M", "727M", "728S", "729S", "730S", "731S", "732S", "733S", "734S", "735S"], 
+        "6층 (6F)": ["601M", "602M", "603X", "604L", "605L", "606L", "607M", "608M", "609M", "610M", "611S", "612S", "613S", "614S", "615S", "616S", "617S", "618S", "619S", "620M", "621M", "622M", "623M", "624M", "625M", "626M", "627M", "628S", "629S", "630S", "631S", "632S", "633S", "634S", "635S"], 
+        "5층 (5F)": ["501M", "502M", "503X", "504L", "505L", "506L", "507M", "508M", "509M", "510M", "511S", "512S", "513S", "514S", "515S", "516S", "517S", "518S", "519S", "520M", "521M", "522M", "523M", "524M", "525M", "526M", "527M", "528S", "529S", "530S", "531S", "532S", "533S", "534S", "535S"], 
+        "4층 (4F)": ["401M", "402M", "403X", "404L", "405L", "406L", "407M", "408M", "409M", "410M", "411S", "412S", "413S", "414S", "415S", "416S", "417S", "418S", "419S", "420M", "421M", "422M", "423M", "424M", "425M", "426M", "427M", "428S", "429S", "430S", "431S", "432S", "433S", "434S", "435S"], 
+        "3층 (3F)": ["301M", "302M", "303X", "304L", "305L", "306L", "307M", "308M", "309M", "310M", "311S", "312S", "313S", "314S", "315S", "316S", "317S", "318S", "319S", "320M", "321M", "322M", "323M", "324M", "325M", "326M", "327M", "328S", "329S", "330S", "331S", "332S", "333S", "334S", "335S"], 
+        "2층 (2F)": ["201M", "202M", "203X", "204L", "205L", "206L", "207M", "208M", "209M", "210M", "211S", "212S", "213S", "214S", "215S", "216S", "217S", "218M", "219M", "220M", "221M", "222M", "223M", "224M", "225M", "226S", "227S", "228S", "229S", "230S", "231S", "232S", "233S"] 
     };
-
-    let roomDataStore = {};
-    let currentSelectedRoom = "";
-
-    // ⭐️ 누군가 휴대폰이나 PC에서 변경하면 0.1초만에 전 직원 화면을 갱신합니다.
-    roomsRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            roomDataStore = data;
-        } else {
-            roomDataStore = {};
-        }
-        
-        buildDashboard();
-        
-        // 만약 창을 열어둔 상태라면 타임라인 내용도 실시간 업데이트
-        if (document.getElementById('detailModal').style.display === 'flex') {
-            renderHistoryList();
-            if(roomDataStore[currentSelectedRoom]) {
-                document.getElementById(`radio-${roomDataStore[currentSelectedRoom].status}`).checked = true;
-            }
-        }
-        
-        document.getElementById('loadingScreen').style.display = 'none';
+    
+    let roomState = {};
+    let customRooms = ["기타1","기타2","기타3"];
+    let floor1Rooms = ["에스와이", "미래개발"]; 
+    let envRooms = []; // 주변 환경 데이터 배열 신규 추가
+    let activeRoom = null;
+    let resetPassword = "0000";
+    
+    firebase.initializeApp(firebaseConfig); 
+    const db = firebase.firestore(), docRef = db.collection("resort_system").doc("resort_main_data"), configRef = db.collection("resort_system").doc("admin_config");
+    
+    configRef.onSnapshot(snap => { if(snap.exists) resetPassword = snap.data().resetPassword || "0000"; });
+    
+    docRef.onSnapshot(snap => { 
+        document.getElementById('loader').style.display = 'none'; 
+        if(snap.exists) { 
+            const d = snap.data(); 
+            roomState = d.roomState || {}; 
+            customRooms = d.customRooms || customRooms; 
+            floor1Rooms = d.floor1Rooms || floor1Rooms; 
+            envRooms = d.envRooms || envRooms; 
+            render(); 
+        } else render(); 
     });
 
-    function buildDashboard() {
-        renderWing("오렌지동", "orangeGates");
-        renderWing("그린동", "greenGates");
-    }
+    function render() {
+        const query = document.getElementById('search').value.toLowerCase();
+        const container = document.getElementById('room-grid'); container.innerHTML = '';
+        
+        // 렌더링 세트에 주변 환경(envRooms) 추가
+        const dataSet = { 
+            ...initialFloors, 
+            "1층 및 협력시설 (1F)": floor1Rooms, 
+            "주변 환경 (야외/부대시설)": envRooms,
+            "기타 등록 구역": customRooms 
+        };
+        
+        let t=0, r=0, i=0, f=0, l=0;
+        let lr=[], li=[], lf=[], ll=[];
+        for (let floor in dataSet) {
+            const filtered = [...dataSet[floor]].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true})).filter(rm=>rm.toLowerCase().includes(query));
+            if(filtered.length==0 && query && floor !== "주변 환경 (야외/부대시설)") continue;
+            
+            // 데이터가 비어있어도 카테고리는 유지 (주변환경 등)
+            if(filtered.length==0 && !query) continue;
 
-    function renderWing(wingName, containerId) {
-        const container = document.getElementById(containerId);
-        container.innerHTML = "";
-
-        yustelStructure[wingName].forEach(group => {
-            const gateDiv = document.createElement('div');
-            gateDiv.className = 'gate-group';
-            gateDiv.innerHTML = `<div class="gate-title">📍 ${group.gate}</div>`;
-
-            const gridDiv = document.createElement('div');
-            gridDiv.className = 'room-grid';
-
-            group.rooms.forEach(roomNo => {
-                const roomKey = `${wingName}_${roomNo}`;
-                
-                if (!roomDataStore[roomKey]) {
-                    roomDataStore[roomKey] = { status: "정상", history: [] };
-                }
-
-                const data = roomDataStore[roomKey];
+            const sec = document.createElement('div'); sec.className = 'floor-section';
+            sec.innerHTML = `<div class="floor-title">📍 ${floor}</div>`;
+            const grid = document.createElement('div'); grid.className = 'grid-rooms';
+            filtered.forEach(rm => {
+                const s = roomState[rm] || { status: '정상', fireHazard: false, leakHazard: false };
+                t++; if(s.status=='접수') {r++; lr.push(rm);} if(s.status=='점검') {i++; li.push(rm);} if(s.fireHazard) {f++; lf.push(rm);} if(s.leakHazard) {l++; ll.push(rm);}
                 const btn = document.createElement('button');
-                btn.className = `room-btn status-${data.status}`;
-                btn.innerHTML = `${roomNo}호<br><span>${data.status}</span>`;
-                
-                if (data.history && Array.isArray(data.history) && data.history.length > 0) {
-                    btn.innerHTML += `<div class="memo-badge">📜</div>`;
-                }
-                
-                btn.onclick = () => openModal(wingName, roomNo, roomKey);
-                gridDiv.appendChild(btn);
+                btn.className = `room-btn status-${s.status} ${s.fireHazard?'fire-hazard':''} ${s.leakHazard?'leak-hazard':''}`;
+                btn.innerText = (s.fireHazard?'🔥 ':'') + (s.leakHazard?'💧 ':'') + rm;
+                btn.onclick = () => openModal(rm); grid.appendChild(btn);
             });
-
-            gateDiv.appendChild(gridDiv);
-            container.appendChild(gateDiv);
-        });
+            sec.appendChild(grid); container.appendChild(sec);
+        }
+        document.getElementById('stat-total').innerText = t; document.getElementById('stat-received').innerText = r; document.getElementById('stat-inspecting').innerText = i; document.getElementById('stat-fire').innerText = f; document.getElementById('stat-leak').innerText = l;
+        document.getElementById('list-received').innerText = lr.join(', ') || '없음'; document.getElementById('list-inspecting').innerText = li.join(', ') || '없음'; document.getElementById('list-fire').innerText = lf.join(', ') || '없음'; document.getElementById('list-leak').innerText = ll.join(', ') || '없음';
     }
 
-    function openModal(wingName, roomNo, roomKey) {
-        currentSelectedRoom = roomKey;
-        const data = roomDataStore[roomKey];
-
-        document.getElementById('modalTitle').innerText = `${wingName} ${roomNo}호`;
-        document.getElementById('modalDetail').value = ""; 
-        document.getElementById(`radio-${data.status}`).checked = true;
+    function openModal(rm) { 
+        activeRoom = rm; 
+        const d = roomState[rm] || { status: '정상', fireHazard: false, leakHazard: false, fireDesc: '', leakDesc: '', history: [] }; 
+        document.getElementById('modal-title').innerText = rm; 
         
-        renderHistoryList();
-        document.getElementById('detailModal').style.display = 'flex';
+        // 1층, 주변환경, 기타 구역은 이름 변경 및 삭제 가능
+        const isEditable = floor1Rooms.includes(rm) || customRooms.includes(rm) || envRooms.includes(rm);
+        document.getElementById('rename-btn').style.display = isEditable ? 'inline-block' : 'none';
+        document.getElementById('delete-room-btn').style.display = isEditable ? 'inline-block' : 'none';
+
+        document.getElementById('fire-check').checked = d.fireHazard; 
+        document.getElementById('fire-desc').value = d.fireDesc || ''; 
+        document.getElementById('leak-check').checked = d.leakHazard; 
+        document.getElementById('leak-desc').value = d.leakDesc || ''; 
+        toggleFireDesc(); toggleLeakDesc(); 
+        document.querySelector(`input[name="st"][value="${d.status || '정상'}"]`).checked = true; 
+        document.getElementById('repair-txt').value = '';
+        renderHistory(d.history || []); 
+        document.getElementById('modal').style.display = 'flex'; 
     }
 
-    function closeModal() {
-        document.getElementById('detailModal').style.display = 'none';
-    }
-
-    function renderHistoryList() {
-        const historyList = document.getElementById('historyList');
-        historyList.innerHTML = "";
-        const data = roomDataStore[currentSelectedRoom];
+    async function renameRoom() {
+        const newName = prompt(`'${activeRoom}'의 새로운 이름을 입력하세요:\n(기존 이력은 그대로 유지됩니다.)`);
+        if (!newName || newName.trim() === "" || newName === activeRoom) return;
+        const trimmedName = newName.trim();
         
-        if (!data.history || !Array.isArray(data.history) || data.history.length === 0) {
-            historyList.innerHTML = "<li style='color:#999; list-style:none; font-size:0.85rem; text-align:center; padding: 20px 10px; background:#f9f9f9; border-radius:8px;'>등록된 내역이 없습니다.</li>";
-        } else {
-            [...data.history].reverse().forEach(log => {
-                const li = document.createElement('li');
-                li.className = `history-item h-${log.status}`;
-                li.innerHTML = `
-                    <div class="history-header">
-                        <div class="history-date">${log.time}</div>
-                        <div class="admin-controls">
-                            <button class="btn-small" onclick="editLog(${log.id})">수정</button>
-                            <button class="btn-small" onclick="deleteLog(${log.id})">삭제</button>
-                        </div>
-                    </div>
-                    <div style="margin-top: 4px;"><span class="history-status">[${log.status}]</span> <span id="text-${log.id}">${log.text}</span></div>
-                `;
-                historyList.appendChild(li);
-            });
+        const pwd = prompt("관리자 비밀번호를 입력하세요:");
+        if (pwd !== resetPassword) { alert("비밀번호 불일치."); return; }
+
+        if (floor1Rooms.includes(activeRoom)) floor1Rooms[floor1Rooms.indexOf(activeRoom)] = trimmedName;
+        else if (envRooms.includes(activeRoom)) envRooms[envRooms.indexOf(activeRoom)] = trimmedName;
+        else if (customRooms.includes(activeRoom)) customRooms[customRooms.indexOf(activeRoom)] = trimmedName;
+
+        const updates = { customRooms, floor1Rooms, envRooms };
+
+        if (roomState[activeRoom]) {
+            updates[`roomState.${trimmedName}`] = roomState[activeRoom];
+            updates[`roomState.${activeRoom}`] = firebase.firestore.FieldValue.delete();
+            roomState[trimmedName] = roomState[activeRoom];
+            delete roomState[activeRoom];
         }
+
+        await docRef.update(updates);
+        alert(`'${trimmedName}'(으)로 변경 완료!`);
+        closeModal();
     }
 
-    function syncRoomStatus() {
-        const data = roomDataStore[currentSelectedRoom];
-        if (data.history && Array.isArray(data.history) && data.history.length > 0) {
-            data.status = data.history[data.history.length - 1].status;
-        } else {
-            data.status = "정상";
-            data.history = []; 
-        }
-    }
+    async function deleteRoom() {
+        const pwd = prompt(`'${activeRoom}' 구역과 모든 기록을 삭제하시겠습니까?\n삭제하려면 관리자 비밀번호를 입력하세요:`);
+        if (pwd !== resetPassword) { if (pwd !== null) alert("비밀번호 불일치."); return; }
 
-    // ⭐️ 구글 파이어베이스 서버로 전송하는 기능
-    function saveToServer() {
-        roomsRef.set(roomDataStore);
-    }
+        if(confirm(`⚠️ 정말로 '${activeRoom}' 구역을 영구 삭제하시겠습니까?`)) {
+            if (floor1Rooms.includes(activeRoom)) floor1Rooms.splice(floor1Rooms.indexOf(activeRoom), 1);
+            else if (envRooms.includes(activeRoom)) envRooms.splice(envRooms.indexOf(activeRoom), 1);
+            else if (customRooms.includes(activeRoom)) customRooms.splice(customRooms.indexOf(activeRoom), 1);
 
-    function registerNewLog() {
-        const selectedStatus = document.querySelector('input[name="roomStatus"]:checked').value;
-        const noteText = document.getElementById('modalDetail').value.trim();
-        const data = roomDataStore[currentSelectedRoom];
-
-        if (noteText === "" && selectedStatus === data.status) {
-            alert("입력된 내용이나 변경된 상태가 없습니다.");
-            return;
-        }
-
-        const now = new Date();
-        const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-
-        if (!data.history || !Array.isArray(data.history)) data.history = [];
-
-        data.history.push({
-            id: Date.now(),
-            time: timeStr,
-            status: selectedStatus,
-            text: noteText || "상태 업데이트"
-        });
-
-        syncRoomStatus();
-        saveToServer();
-        document.getElementById('modalDetail').value = "";
-    }
-
-    function deleteLog(logId) {
-        if(prompt("🔒 삭제 권한이 필요합니다. 관리자 비밀번호를 입력하세요:") !== ADMIN_PASSWORD) {
-            alert("❌ 비밀번호가 틀렸습니다."); return;
-        }
-        
-        if (confirm("이 기록을 삭제하시겠습니까?")) {
-            const data = roomDataStore[currentSelectedRoom];
-            data.history = data.history.filter(log => log.id !== logId);
-            syncRoomStatus();
-            saveToServer();
-        }
-    }
-
-    function editLog(logId) {
-        if(prompt("🔒 수정 권한이 필요합니다. 관리자 비밀번호를 입력하세요:") !== ADMIN_PASSWORD) {
-            alert("❌ 비밀번호가 틀렸습니다."); return;
-        }
-        
-        const data = roomDataStore[currentSelectedRoom];
-        const targetLog = data.history.find(log => log.id === logId);
-        
-        const newText = prompt("수정할 내용을 입력하세요:", targetLog.text);
-        if (newText !== null && newText.trim() !== "") {
-            targetLog.text = newText;
-            saveToServer();
-        }
-    }
-
-    function resetRoomHistory() {
-        if(prompt("🔒 객실 이력을 모두 삭제합니다. 관리자 비밀번호:") !== ADMIN_PASSWORD) {
-            alert("❌ 비밀번호가 틀렸습니다."); return;
-        }
-        
-        if (confirm("정말로 이 객실의 모든 과거 기록을 지우시겠습니까? (복구 불가)")) {
-            roomDataStore[currentSelectedRoom] = { status: "정상", history: [] };
-            saveToServer();
+            const updates = { customRooms, floor1Rooms, envRooms };
+            if (roomState[activeRoom]) {
+                updates[`roomState.${activeRoom}`] = firebase.firestore.FieldValue.delete();
+                delete roomState[activeRoom];
+            }
+            await docRef.update(updates);
+            alert(`완전히 삭제되었습니다.`);
             closeModal();
         }
+    }
+
+    function renderHistory(hist) { 
+        const cont = document.getElementById('hist-list'); 
+        cont.innerHTML = hist.length ? '' : '<div style="text-align:center; color:#94a3b8; padding: 20px 0; font-weight:600;">등록된 내역이 없습니다.</div>'; 
+        hist.forEach((h, i) => {
+            let displayStatus = h.status === '점검' ? '진행' : h.status;
+            cont.innerHTML += `
+            <div class="hist-item">
+                <div class="hist-top">
+                    <span class="hist-time-status">${h.date} | ${displayStatus}</span>
+                    <div>
+                        <button class="hist-action-btn" style="color:#3b82f6;" onclick="editHist(${i})">수정</button>
+                        <button class="hist-action-btn" style="color:#ef4444;" onclick="delHist(${i})">삭제</button>
+                    </div>
+                </div>
+                <div class="hist-txt">${h.description}</div>
+            </div>`;
+        });
+    }
+
+    async function save() { 
+        const st = document.querySelector('input[name="st"]:checked').value;
+        const f = document.getElementById('fire-check').checked;
+        const l = document.getElementById('leak-check').checked;
+        const fd = document.getElementById('fire-desc').value.trim();
+        const ld = document.getElementById('leak-desc').value.trim();
+        const txt = document.getElementById('repair-txt').value.trim();
+        const d = roomState[activeRoom] || { history: [] }; 
+        
+        let statusChanged = (d.status !== st);
+        let fireChanged = (d.fireHazard !== f);
+        let leakChanged = (d.leakHazard !== l);
+
+        d.history = d.history || []; 
+        
+        if(txt || statusChanged || fireChanged || leakChanged) {
+            const now = new Date();
+            const dateTimeStr = now.toLocaleDateString('ko-KR') + ' ' + now.toLocaleTimeString('ko-KR', {hour: '2-digit', minute:'2-digit'});
+            
+            let logMsg = txt;
+            if(!txt) {
+                let msgs = [];
+                let displaySt = st === '점검' ? '진행' : st;
+                if(statusChanged) msgs.push(`상태변경: ${displaySt}`);
+                if(fireChanged) msgs.push(f ? `🔥 화재위험 체크` : `🟢 화재위험 해제`);
+                if(leakChanged) msgs.push(l ? `💧 누수위험 체크` : `🟢 누수위험 해제`);
+                logMsg = msgs.join(', ');
+            }
+
+            d.history.unshift({ date: dateTimeStr, status: st, description: logMsg }); 
+        }
+        
+        d.status = st; d.fireHazard = f; d.fireDesc = fd; d.leakHazard = l; d.leakDesc = ld; 
+        
+        try {
+            await docRef.update({ [`roomState.${activeRoom}`]: d });
+            roomState[activeRoom] = d; 
+        } catch (error) {
+            roomState[activeRoom] = d; 
+            await docRef.set({ roomState, customRooms, floor1Rooms, envRooms }, { merge: true });
+        }
+        
+        closeModal(); 
+    }
+
+    async function editHist(i) {
+        const oldDesc = roomState[activeRoom].history[i].description;
+        const newDesc = prompt("조치 내용을 수정하세요:", oldDesc);
+        if (newDesc !== null && newDesc.trim() !== "") {
+            roomState[activeRoom].history[i].description = newDesc.trim();
+            await docRef.update({ [`roomState.${activeRoom}`]: roomState[activeRoom] });
+            openModal(activeRoom);
+        }
+    }
+
+    function toggleFireDesc() { document.getElementById('fire-desc-box').style.display = document.getElementById('fire-check').checked ? 'block' : 'none'; }
+    function toggleLeakDesc() { document.getElementById('leak-desc-box').style.display = document.getElementById('leak-check').checked ? 'block' : 'none'; }
+    function closeModal() { document.getElementById('modal').style.display = 'none'; render(); }
+    
+    function openAddModal() { document.getElementById('add-modal').style.display = 'flex'; }
+    function closeAddModal() { document.getElementById('add-modal').style.display = 'none'; }
+    
+    // 주변 환경 카테고리로 분기 처리 추가
+    async function addArea() { 
+        const n = document.getElementById('new-area').value.trim(); 
+        const type = document.getElementById('new-area-type').value; 
+        if(!n) return; 
+        
+        if (type === 'floor1') floor1Rooms.push(n);
+        else if (type === 'env') envRooms.push(n);
+        else customRooms.push(n); 
+        
+        await docRef.update({ customRooms, floor1Rooms, envRooms }); 
+        closeAddModal(); 
+        document.getElementById('new-area').value = ''; 
+        render(); 
+    }
+    
+    async function delHist(i) { 
+        const pwd = prompt("기록을 삭제하려면 관리자 비밀번호를 입력하세요:");
+        if (pwd === resetPassword) {
+            if(confirm("이 기록을 완전히 삭제하시겠습니까?")) { 
+                roomState[activeRoom].history.splice(i, 1); 
+                await docRef.update({ [`roomState.${activeRoom}`]: roomState[activeRoom] });
+                openModal(activeRoom); 
+            }
+        } else if (pwd !== null) { alert("비밀번호 불일치."); }
+    }
+
+    function changeAdminPwd() { const c = prompt("현재 비밀번호 입력:"); if(c === resetPassword) { const n = prompt("새 비밀번호:"); if(n) configRef.set({ resetPassword: n }); } else alert("비밀번호 불일치"); }
+
+    function exportDataV2() {
+        let tableHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+        tableHTML += '<head><meta charset="utf-8"></head>';
+        tableHTML += '<body><table border="1">';
+        tableHTML += '<tr style="background-color: #f1f5f9; font-weight: bold; text-align: center;"><th>호수/구역명</th><th>현재상태</th><th>화재위험 여부</th><th>누수위험 여부</th><th>최근 조치내용</th><th>업데이트 일시</th></tr>';
+
+        const allRooms = { ...initialFloors, "1층 및 협력시설 (1F)": floor1Rooms, "주변 환경 (야외/부대시설)": envRooms, "기타 등록 구역": customRooms };
+        
+        for (let floor in allRooms) {
+            allRooms[floor].forEach(rm => {
+                const d = roomState[rm];
+                if (d && (d.status !== '정상' || d.fireHazard || d.leakHazard || (d.history && d.history.length > 0))) {
+                    let status = d.status || '정상';
+                    let displayStatus = status === '점검' ? '진행' : status;
+                    let fire = d.fireHazard ? (d.fireDesc ? `O (${d.fireDesc})` : 'O') : 'X';
+                    let leak = d.leakHazard ? (d.leakDesc ? `O (${d.leakDesc})` : 'O') : 'X';
+                    let lastHist = d.history && d.history.length > 0 ? d.history[0].description.replace(/\n/g, "<br>") : '';
+                    let lastDate = d.history && d.history.length > 0 ? d.history[0].date : '';
+                    
+                    let rowStyle = (status === '접수' || status === '점검') ? 'style="background-color: #FFFF00;"' : '';
+
+                    tableHTML += `<tr ${rowStyle}>
+                        <td style="text-align: center;">${rm}</td>
+                        <td style="text-align: center; font-weight: bold;">${displayStatus}</td>
+                        <td style="text-align: center;">${fire}</td>
+                        <td style="text-align: center;">${leak}</td>
+                        <td>${lastHist}</td>
+                        <td style="text-align: center;">${lastDate}</td>
+                    </tr>`;
+                }
+            });
+        }
+        
+        tableHTML += '</table></body></html>';
+
+        const blob = new Blob([tableHTML], { type: 'application/vnd.ms-excel' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `양지파인리조트_객실관리대장_${new Date().toISOString().slice(0,10)}.xls`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     }
 </script>
 </body>
