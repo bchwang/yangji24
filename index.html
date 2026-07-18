@@ -15,7 +15,6 @@
 
     <title>파인리조트 유스텔 객실 이력 관리 시스템</title>
     
-    <!-- 무조건 굵게 나오는 웹 폰트 강제 적용 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
@@ -34,7 +33,6 @@
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif; }
-        /* 기본 바탕 글씨 크기 자체를 대폭 상향 */
         body { background-color: var(--bg-color); padding: 10px; color: #111; font-size: 20px; }
         
         header { 
@@ -62,23 +60,19 @@
         .wing-section.orange { border-top-color: var(--orange-theme); }
         .wing-section.green { border-top-color: var(--green-theme); }
         
-        /* 동 이름 무지막지하게 굵고 크게 */
         .wing-title { font-size: 2.2rem; font-weight: 900; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 3px solid #eee; letter-spacing: -1px; }
         
         .gate-group { margin-bottom: 20px; background: #fafafa; padding: 15px; border-radius: 10px; }
         .gate-title { font-size: 1.5rem; color: #222; font-weight: 900; margin-bottom: 15px; }
 
-        /* 방 버튼 크기를 결정하는 폭 넓힘 (버튼이 매우 커짐) */
         .room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 12px; }
         
-        /* 객실 번호 꽉 차게 확대 */
         .room-btn { 
             aspect-ratio: 1 / 1; border: none; border-radius: 12px; font-size: 1.8rem; font-weight: 900;
             color: white; cursor: pointer; display: flex; flex-direction: column; justify-content: center;
             align-items: center; transition: all 0.15s ease; box-shadow: 0 3px 6px rgba(0,0,0,0.15); position: relative;
             letter-spacing: -0.5px;
         }
-        /* 상태 글씨 (정상, 진행 등) 돋보기 없이 보이게 */
         .room-btn span { font-size: 1.2rem; margin-top: 8px; font-weight: 900; background: rgba(0,0,0,0.25); padding: 6px 14px; border-radius: 15px; }
         
         .memo-badge {
@@ -94,7 +88,15 @@
         .status-조치완료 { background-color: var(--color-complete) !important; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 95%; max-width: 500px; box-shadow: 0 5px 25px rgba(0,0,0,0.4); max-height: 90vh; display: flex; flex-direction: column; }
+        
+        /* ⭐️ 버그 수정 핵심 부분: 이력이 찌그러지지 않고 전체 창이 스크롤되도록 설정 변경 */
+        .modal-content { 
+            background: white; padding: 25px; border-radius: 15px; width: 95%; max-width: 500px; 
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4); max-height: 90vh; 
+            overflow-y: auto; /* 전체 모달이 스크롤 가능하게 만듦 */
+            display: block;
+        }
+        
         .modal-header { font-size: 2.2rem; font-weight: 900; margin-bottom: 25px; color: #111; border-bottom: 3px solid #eee; padding-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         
         .input-zone { background: #eef2f5; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
@@ -102,7 +104,6 @@
         
         .status-selector { display: flex; gap: 10px; margin-bottom: 20px; }
         .status-radio { display: none; }
-        /* 선택 버튼(정상, 진행 등) 뚱뚱하고 크게 */
         .status-label { flex: 1; text-align: center; padding: 22px 2px; background: #fff; border: 2px solid #ccc; border-radius: 10px; cursor: pointer; font-size: 1.3rem; font-weight: 900; color: #555; transition: 0.2s; letter-spacing: -0.5px;}
         
         #radio-정상:checked + label { background: var(--color-normal); color: #111; border-color: var(--color-normal); }
@@ -110,17 +111,15 @@
         #radio-진행:checked + label { background: var(--color-progress); color: white; border-color: var(--color-progress); }
         #radio-조치완료:checked + label { background: var(--color-complete); color: white; border-color: var(--color-complete); }
 
-        /* 텍스트 입력창 아주 넓고 크게 */
-        textarea { width: 100%; height: 120px; padding: 20px; border: 2px solid #ccc; border-radius: 10px; resize: none; font-size: 1.4rem; margin-bottom: 20px; font-family: inherit; font-weight: 700; color: #111;}
+        textarea { width: 100%; height: 100px; padding: 20px; border: 2px solid #ccc; border-radius: 10px; resize: none; font-size: 1.4rem; margin-bottom: 20px; font-family: inherit; font-weight: 700; color: #111;}
         
-        /* 등록하기 버튼 압도적으로 크게 */
         .btn-register { width: 100%; padding: 22px; background: #2b579a; color: white; border: none; border-radius: 10px; font-size: 1.6rem; font-weight: 900; cursor: pointer; transition: 0.2s; }
         .btn-register:hover { background: #1e3d6b; }
 
-        .history-zone { flex: 1; overflow-y: auto; padding-right: 5px; }
+        /* ⭐️ 버그 수정 핵심 부분: 이력창이 찌그러지는 속성(flex) 제거 */
+        .history-zone { padding-right: 5px; margin-top: 10px; }
         .history-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 20px; color: #333; display: flex; justify-content: space-between; align-items: center; }
         .history-list { list-style: none; border-left: 4px solid #ccc; padding-left: 18px; margin-left: 5px; }
-        /* 이력 내용 글씨 확대 */
         .history-item { position: relative; margin-bottom: 20px; font-size: 1.3rem; line-height: 1.5; background: #f9f9f9; padding: 18px; border-radius: 10px; border: 2px solid #ddd; font-weight: 700; color: #111;}
         .history-item::before { content: ''; position: absolute; left: -30px; top: 18px; width: 18px; height: 18px; background: #aaa; border-radius: 50%; border: 4px solid white; }
         .history-item.h-접수::before { background: var(--color-received); }
